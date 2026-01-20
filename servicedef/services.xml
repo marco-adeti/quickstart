@@ -42,5 +42,18 @@ under the License.
         <description>Renvoie l'heure actuelle segmentée en JSON</description>
         <attribute name="timeData" type="Map" mode="OUT" optional="false"/>
     </service>
+    <service name="getDatabaseConfigData" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="getDatabaseConfigData">
+    </service>
+    <service name="updateEntityEngineXml" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="updateEntityEngineXml">
+        <attribute name="datasourceName" type="String" mode="IN"/>
+        <attribute name="fieldType" type="String" mode="IN"/>
+        <attribute name="jdbcUri" type="String" mode="IN"/>
+        <attribute name="jdbcUsername" type="String" mode="IN"/>
+        <attribute name="jdbcPassword" type="String" mode="IN" optional="true"/>
+        <attribute name="jdbcDriver" type="String" mode="IN"/>
+    </service>
+    <service name="restartOfbiz" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="restartOfbiz">
+    </service>
+
 
 </services>

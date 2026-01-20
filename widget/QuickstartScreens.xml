@@ -62,4 +62,16 @@ under the License.
         </section>
     </screen>
 
+    <screen name="EditDatabaseConfig">
+        <section>
+            <actions>
+                <service service-name="getDatabaseConfigData" result-map="dbData"/>
+            </actions>
+            <widgets>
+                <platform-specific><html><html-template location="component://quickstart/webapp/quickstart/config/DatabaseConfig.ftl"/></html></platform-specific>
+            </widgets>
+        </section>
+    </screen>
+
+
 </screens>

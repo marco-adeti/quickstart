@@ -59,10 +59,27 @@ under the License.
             <return-user-message value="timeData"/>
         </response>
     </request-map>
+    <request-map uri="editDatabaseConfig">
+        <security https="true" auth="false"/>
+        <response name="success" type="view" value="EditDatabaseConfig"/>
+    </request-map>
+    <request-map uri="updateDatabaseConfig">
+        <security https="true" auth="false"/>
+        <event type="service" invoke="updateEntityEngineXml"/>
+        <response name="success" type="view" value="EditDatabaseConfig"/>
+    </request-map>
+    <request-map uri="restartOfbiz">
+        <security https="true" auth="false"/>
+        <event type="service" invoke="restartOfbiz"/>
+        <response name="success" type="view" value="EditDatabaseConfig"/>
+    </request-map>
+
+
     
     <!-- View Mappings -->
     <view-map name="main" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#main"/>
     <view-map name="home" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#home" auth="false"/>
     <view-map name="dbConfig" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#dbConfig" auth="false"/>
+    <view-map name="EditDatabaseConfig" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#EditDatabaseConfig" auth="false"/>
 
 </site-conf>
