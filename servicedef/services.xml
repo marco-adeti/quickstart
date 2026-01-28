@@ -43,6 +43,9 @@ under the License.
         <attribute name="timeData" type="Map" mode="OUT" optional="false"/>
     </service>
     <service name="getDatabaseConfigData" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="getDatabaseConfigData">
+        <description>Récupère la liste des datasources et des types de champs du fichier entityengine.xml</description>
+        <attribute name="datasources" type="List" mode="OUT" optional="false"/>
+        <attribute name="fieldTypes" type="List" mode="OUT" optional="false"/>
     </service>
     <service name="updateEntityEngineXml" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="updateEntityEngineXml">
         <attribute name="datasourceName" type="String" mode="IN"/>
@@ -54,6 +57,15 @@ under the License.
     </service>
     <service name="restartOfbiz" engine="groovy" location="component://quickstart/groovyScripts/DatabaseConfigServices.groovy" invoke="restartOfbiz">
     </service>
-
+    <service name="createSuperUser" engine="groovy"
+             location="component://quickstart/groovyScripts/CreateSuperUser.groovy"
+             invoke="createSuperUser">
+        <description>Créer un superutilisateur avec accès complet</description>
+        <attribute name="userLoginId" type="String" mode="IN" optional="false"/>
+        <attribute name="password" type="String" mode="IN" optional="false"/>
+        <attribute name="firstName" type="String" mode="IN" optional="true"/>
+        <attribute name="lastName" type="String" mode="IN" optional="true"/>
+        <attribute name="emailAddress" type="String" mode="IN" optional="true"/>
+    </service>
 
 </services>

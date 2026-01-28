@@ -22,7 +22,7 @@
                             </select>
                         </td>
                     </tr>
-                    <tr><td class="label">JDBC URI</td><td><input type="text" name="jdbcUri" id="jdbcUri" size="80"/></td></tr>
+                    <tr><td class="label">JDBC URI</td><td><input type="text" name="jdbcUri" id="jdbcUri" size="80" value="${(targetUri!"")?html}"/></td></tr>
                     <tr><td class="label">Username</td><td><input type="text" name="jdbcUsername" id="jdbcUsername"/></td></tr>
                     <tr><td class="label">Password</td><td><input type="password" name="jdbcPassword" id="jdbcPassword"/></td></tr>
                     <tr><td class="label">Driver Class</td><td><input type="text" name="jdbcDriver" id="jdbcDriver" size="50"/></td></tr>
@@ -42,13 +42,20 @@
 </div>
 
 <script>
+    // Fonction utilitaire pour décoder les entités HTML
+    function decodeHtml(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
     const dsData = {
         <#list dbData.datasources as ds>
             "${ds.name}": {
-                "uri": "${ds.uri?js_string}",
-                "username": "${ds.username?js_string}",
-                "driver": "${ds.driver?js_string}",
-                "fieldType": "${ds.fieldType?js_string}"
+                "uri": "${(ds.uri!"")?js_string}",
+                "username": "${(ds.username!"")?js_string}",
+                "driver": "${(ds.driver!"")?js_string}",
+                "fieldType": "${(ds.fieldType!"")?js_string}"
             }<#if ds_has_next>,</#if>
         </#list>
     };
@@ -57,10 +64,10 @@
         const sel = document.getElementById('dsSelector').value;
         const data = dsData[sel] || {uri: "", username: "", driver: "", fieldType: ""};
         
-        document.getElementById('jdbcUri').value = data.uri;
+        // On décode l'URI avant de l'injecter dans le champ
+        document.getElementById('jdbcUri').value = decodeHtml(data.uri);
         document.getElementById('jdbcUsername').value = data.username;
         document.getElementById('jdbcDriver').value = data.driver;
         document.getElementById('fieldType').value = data.fieldType;
     }
 </script>
-

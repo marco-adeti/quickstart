@@ -21,12 +21,17 @@ def getDatabaseConfigData() {
 
         List dsElements = UtilXml.childElementList(doc.getDocumentElement(), "datasource")
         dsElements.each { ds ->
+            // RÉCUPÉRATION DE L'ÉLÉMENT ENFANT JDBC
+            Element inlineJdbc = UtilXml.firstChildElement(ds, "inline-jdbc")
+            
+            def rawUri = inlineJdbc ? inlineJdbc.getAttribute("jdbc-uri") : ds.getAttribute("jdbc-uri")
             datasources << [
                 name: ds.getAttribute("name"),
                 fieldType: ds.getAttribute("field-type-name"),
-                uri: ds.getAttribute("jdbc-uri"),
-                username: ds.getAttribute("jdbc-username"),
-                driver: ds.getAttribute("jdbc-driver")
+                // On cherche dans inline-jdbc, sinon on prend l'attribut du parent (fallback)
+                uri: rawUri ? rawUri.replace("&#x3b;", ";") : "",
+                username: inlineJdbc ? inlineJdbc.getAttribute("jdbc-username") : ds.getAttribute("jdbc-username"),
+                driver: inlineJdbc ? inlineJdbc.getAttribute("jdbc-driver") : ds.getAttribute("jdbc-driver")
             ]
             fieldTypes << ds.getAttribute("field-type-name")
         }
@@ -55,24 +60,25 @@ def updateEntityEngineXml() {
         List dsElements = UtilXml.childElementList(root, "datasource")
         
         Element targetDs = dsElements.find { it.getAttribute("name") == dsName }
-
-        if (!targetDs) {
-            targetDs = doc.createElement("datasource")
-            targetDs.setAttribute("name", dsName)
-            root.appendChild(targetDs)
-        }
-
         targetDs.setAttribute("field-type-name", context.fieldType)
-        targetDs.setAttribute("jdbc-uri", context.jdbcUri)
-        targetDs.setAttribute("jdbc-username", context.jdbcUsername)
-        targetDs.setAttribute("jdbc-password", context.jdbcPassword)
-        targetDs.setAttribute("jdbc-driver", context.jdbcDriver)
+        
+        Element inlineJdbc = UtilXml.firstChildElement(targetDs, "inline-jdbc")
+        if (!inlineJdbc) {
+            inlineJdbc = doc.createElement("inline-jdbc")
+            targetDs.appendChild(inlineJdbc)
+        }
+        inlineJdbc.setAttribute("jdbc-uri", context.jdbcUri)
+        inlineJdbc.setAttribute("jdbc-username", context.jdbcUsername)
+        inlineJdbc.setAttribute("jdbc-password", context.jdbcPassword)
+        inlineJdbc.setAttribute("jdbc-driver", context.jdbcDriver)
 
-        // 3. Écriture
-        Transformer transformer = TransformerFactory.newInstance().newTransformer()
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes")
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4")
-        transformer.transform(new DOMSource(doc), new StreamResult(xmlFile))
+        // 3. Écriture propre via les utilitaires OFBiz
+        OutputStream os = new FileOutputStream(xmlFile)
+        try {
+            UtilXml.writeXmlDocument(os, doc, "UTF-8", true, true)
+        } finally {
+            os.close()
+        }
 
     } catch (Exception e) {
         return ServiceUtil.returnError("Erreur écriture: " + e.message)

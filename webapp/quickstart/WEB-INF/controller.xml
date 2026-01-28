@@ -73,6 +73,19 @@ under the License.
         <event type="service" invoke="restartOfbiz"/>
         <response name="success" type="view" value="EditDatabaseConfig"/>
     </request-map>
+    <!-- Afficher le formulaire de création -->
+    <request-map uri="createSuperUserForm">
+        <security https="true" auth="false"/>
+        <response name="success" type="view" value="CreateSuperUser"/>
+    </request-map>
+
+    <!-- Traiter la création -->
+    <request-map uri="createSuperUser">
+        <security https="true" auth="false"/>
+        <event type="service" invoke="createSuperUser"/>
+        <response name="success" type="view" value="CreateSuperUser"/>
+        <response name="error" type="view" value="CreateSuperUser"/>
+    </request-map>
 
 
     
@@ -81,5 +94,8 @@ under the License.
     <view-map name="home" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#home" auth="false"/>
     <view-map name="dbConfig" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#dbConfig" auth="false"/>
     <view-map name="EditDatabaseConfig" type="screen" page="component://quickstart/widget/QuickstartScreens.xml#EditDatabaseConfig" auth="false"/>
+    <view-map name="CreateSuperUser" type="screen"
+              page="component://quickstart/widget/QuickstartScreens.xml#CreateSuperUser"
+              auth="false"/>
 
 </site-conf>
